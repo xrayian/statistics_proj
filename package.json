@@ -1,0 +1,28 @@
+{
+  "name": "statistics-charts-app",
+  "version": "1.0.0",
+  "description": "A Node.js application with Chart.js for plotting statistical charts",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "chart.js": "^4.4.0",
+    "chartjs-adapter-date-fns": "^3.0.0",
+    "date-fns": "^2.30.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "keywords": [
+    "statistics",
+    "charts",
+    "chartjs",
+    "visualization",
+    "nodejs"
+  ],
+  "author": "Statistics Charts App",
+  "license": "MIT"
+}
