@@ -33,6 +33,7 @@ function generatePieChart(data, options = {}) {
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: {
                 title: {
                     display: true,
@@ -61,6 +62,7 @@ function generateBarChart(data, options = {}) {
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: {
                 title: {
                     display: true,
@@ -124,6 +126,7 @@ function generateHistogram(data, options = {}) {
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: {
                 title: {
                     display: true,
@@ -192,6 +195,7 @@ function generateFrequencyPolygon(data, options = {}) {
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: {
                 title: {
                     display: true,
@@ -259,6 +263,7 @@ function generateFrequencyCurve(data, options = {}) {
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: {
                 title: {
                     display: true,
@@ -325,6 +330,7 @@ function generateOgiveCurve(data, options = {}) {
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: {
                 title: {
                     display: true,

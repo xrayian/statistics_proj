@@ -211,6 +211,8 @@ header p {
     display: flex;
     align-items: center;
     justify-content: center;
+    min-height: 400px;
+    width: 100%;
 }
 
 .chart-container:empty::before {
@@ -511,7 +513,10 @@ header p {
     }
     
     .chart-container {
-        height: 300px;
+        height: 50vh;
+        min-height: 300px;
+        max-height: 500px;
+        padding: 15px;
     }
     
     .chart-actions button {
@@ -547,10 +552,49 @@ header p {
     }
 }
 
+/* Extra small mobile devices */
+@media (max-width: 480px) {
+    .container {
+        padding: 10px;
+    }
+    
+    header h1 {
+        font-size: 1.8rem;
+    }
+    
+    header h6 {
+        font-size: 0.8rem;
+    }
+    
+    .input-section, .chart-section {
+        padding: 15px;
+    }
+    
+    .chart-container {
+        height: 45vh;
+        min-height: 250px;
+        max-height: 400px;
+        padding: 10px;
+    }
+    
+    .chart-actions button {
+        padding: 8px 12px;
+        font-size: 0.85rem;
+        width: 100%;
+    }
+}
+
 /* Chart.js responsive overrides */
 .chart-container canvas {
     max-width: 100% !important;
+    max-height: 100% !important;
+    width: auto !important;
     height: auto !important;
+}
+
+#statisticsChart {
+    width: 100% !important;
+    height: 100% !important;
 }
 
 /* Print styles */
