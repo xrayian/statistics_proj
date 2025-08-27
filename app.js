@@ -465,20 +465,149 @@ function generateChart() {
 
 // Create or update chart using Chart.js
 function createChart(config) {
-    const ctx = document.getElementById('statisticsChart').getContext('2d');
+    const canvas = document.getElementById('statisticsChart');
+    const ctx = canvas.getContext('2d');
     
     // Destroy existing chart if it exists
     if (currentChart) {
         currentChart.destroy();
     }
     
-    // Create new chart
-    currentChart = new Chart(ctx, config);
+    // Fix canvas sizing for mobile devices
+    const container = canvas.parentElement;
+    const containerRect = container.getBoundingClientRect();
+    
+    // Set canvas size based on container with device pixel ratio consideration
+    const dpr = window.devicePixelRatio || 1;
+    const displayWidth = containerRect.width - 40; // Account for padding
+    const displayHeight = containerRect.height - 40; // Account for padding
+    
+    // Set the canvas size in CSS pixels
+    canvas.style.width = displayWidth + 'px';
+    canvas.style.height = displayHeight + 'px';
+    
+    // Set the canvas size in actual pixels for high DPI displays
+    canvas.width = displayWidth * dpr;
+    canvas.height = displayHeight * dpr;
+    
+    // Scale the drawing context so everything draws at the correct size
+    ctx.scale(dpr, dpr);
+    
+    // Enhance mobile responsiveness configuration
+    const isMobile = window.innerWidth <= 768;
+    
+    // Merge mobile-specific options
+    const mobileConfig = {
+        ...config,
+        options: {
+            ...config.options,
+            responsive: true,
+            maintainAspectRatio: false,
+            devicePixelRatio: dpr,
+            // Enhanced interaction for mobile
+            interaction: {
+                intersect: false,
+                mode: 'index'
+            },
+            // Mobile-specific font sizes
+            plugins: {
+                ...config.options?.plugins,
+                legend: {
+                    ...config.options?.plugins?.legend,
+                    labels: {
+                        ...config.options?.plugins?.legend?.labels,
+                        font: {
+                            size: isMobile ? 12 : 14
+                        },
+                        padding: isMobile ? 10 : 20
+                    }
+                },
+                title: {
+                    ...config.options?.plugins?.title,
+                    font: {
+                        size: isMobile ? 14 : 16
+                    }
+                },
+                tooltip: {
+                    ...config.options?.plugins?.tooltip,
+                    titleFont: {
+                        size: isMobile ? 12 : 14
+                    },
+                    bodyFont: {
+                        size: isMobile ? 11 : 13
+                    }
+                }
+            },
+            // Mobile-specific scale configuration
+            scales: config.options?.scales ? {
+                ...config.options.scales,
+                x: {
+                    ...config.options.scales.x,
+                    ticks: {
+                        ...config.options.scales.x?.ticks,
+                        font: {
+                            size: isMobile ? 10 : 12
+                        },
+                        maxRotation: isMobile ? 45 : 0,
+                        minRotation: isMobile ? 45 : 0
+                    },
+                    title: {
+                        ...config.options.scales.x?.title,
+                        font: {
+                            size: isMobile ? 11 : 13
+                        }
+                    }
+                },
+                y: {
+                    ...config.options.scales.y,
+                    ticks: {
+                        ...config.options.scales.y?.ticks,
+                        font: {
+                            size: isMobile ? 10 : 12
+                        }
+                    },
+                    title: {
+                        ...config.options.scales.y?.title,
+                        font: {
+                            size: isMobile ? 11 : 13
+                        }
+                    }
+                }
+            } : undefined
+        }
+    };
+    
+    // Create new chart with mobile-optimized configuration
+    currentChart = new Chart(ctx, mobileConfig);
     
     // Enable export button when chart is created
     const exportButton = document.getElementById('exportChart');
     if (exportButton) {
         exportButton.disabled = false;
+    }
+    
+    // Add resize listener to handle orientation changes on mobile
+    if (window.ResizeObserver) {
+        const resizeObserver = new ResizeObserver(() => {
+            if (currentChart) {
+                // Delay resize to ensure container has updated dimensions
+                setTimeout(() => {
+                    const newContainerRect = container.getBoundingClientRect();
+                    const newDisplayWidth = newContainerRect.width - 40;
+                    const newDisplayHeight = newContainerRect.height - 40;
+                    
+                    canvas.style.width = newDisplayWidth + 'px';
+                    canvas.style.height = newDisplayHeight + 'px';
+                    canvas.width = newDisplayWidth * dpr;
+                    canvas.height = newDisplayHeight * dpr;
+                    ctx.scale(dpr, dpr);
+                    
+                    currentChart.resize();
+                }, 100);
+            }
+        });
+        
+        resizeObserver.observe(container);
     }
 }
 
@@ -762,5 +891,62 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    console.log('Statistics Charts Application initialized for GitHub Pages');
+    // Handle window resize and orientation changes for mobile
+    let resizeTimeout;
+    window.addEventListener('resize', function() {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(function() {
+            if (currentChart) {
+                // Force chart recreation on significant size changes (like orientation change)
+                const canvas = document.getElementById('statisticsChart');
+                const container = canvas.parentElement;
+                const containerRect = container.getBoundingClientRect();
+                
+                // Check if this is a significant resize (like orientation change)
+                const isSignificantResize = Math.abs(containerRect.width - canvas.offsetWidth) > 50 ||
+                                          Math.abs(containerRect.height - canvas.offsetHeight) > 50;
+                
+                if (isSignificantResize) {
+                    // Save current chart config and regenerate
+                    const chartConfig = currentChart.config;
+                    currentChart.destroy();
+                    
+                    // Small delay to ensure DOM has updated
+                    setTimeout(() => {
+                        currentChart = new Chart(canvas.getContext('2d'), chartConfig);
+                    }, 100);
+                } else {
+                    // Just resize existing chart
+                    currentChart.resize();
+                }
+            }
+        }, 250);
+    });
+    
+    // Handle orientation change specifically for mobile devices
+    window.addEventListener('orientationchange', function() {
+        setTimeout(function() {
+            if (currentChart) {
+                const canvas = document.getElementById('statisticsChart');
+                const ctx = canvas.getContext('2d');
+                const container = canvas.parentElement;
+                const containerRect = container.getBoundingClientRect();
+                const dpr = window.devicePixelRatio || 1;
+                
+                // Recalculate canvas dimensions
+                const displayWidth = containerRect.width - 40;
+                const displayHeight = containerRect.height - 40;
+                
+                canvas.style.width = displayWidth + 'px';
+                canvas.style.height = displayHeight + 'px';
+                canvas.width = displayWidth * dpr;
+                canvas.height = displayHeight * dpr;
+                ctx.scale(dpr, dpr);
+                
+                currentChart.resize();
+            }
+        }, 500); // Longer delay for orientation change
+    });
+    
+    console.log('Statistics Charts Application initialized with mobile optimizations');
 });
