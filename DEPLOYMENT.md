@@ -34,8 +34,8 @@ git add .
 # Commit files
 git commit -m "Initial commit: Statistics Charts Application"
 
-# Add remote repository (replace YOUR_USERNAME with your GitHub username)
-git remote add origin https://github.com/YOUR_USERNAME/statistics_proj.git
+# Add remote repository (replace xrayian with your GitHub username)
+git remote add origin https://github.com/xrayian/statistics_proj.git
 
 # Push to GitHub
 git push -u origin main
@@ -59,7 +59,7 @@ git push -u origin main
 
 ### 4. Access Your Live Application
 
-1. GitHub will show you the URL: `https://YOUR_USERNAME.github.io/statistics_proj`
+1. GitHub will show you the URL: `https://xrayian.github.io/statistics_proj`
 2. It may take 5-10 minutes for the first deployment
 3. The URL will be displayed in the Pages settings
 
@@ -140,6 +140,6 @@ Since this is a client-side application:
 ## 🎉 Success!
 
 Once deployed, your Statistics Charts Application will be available worldwide at:
-**`https://YOUR_USERNAME.github.io/statistics_proj`**
+**`https://xrayian.github.io/statistics_proj`**
 
 Share this URL with anyone who needs to create statistical charts!

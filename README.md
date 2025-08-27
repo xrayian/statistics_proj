@@ -4,7 +4,7 @@ This repository contains a client-side statistics charts application built with 
 
 ## 🚀 Live Demo
 
-Visit the live application: **[Statistics Charts App](https://YOUR_USERNAME.github.io/statistics_proj)**
+Visit the live application: **[Statistics Charts App](https://xrayian.github.io/statistics_proj)**
 
 ## 📊 Supported Chart Types
 
@@ -64,7 +64,7 @@ This application is automatically deployed to GitHub Pages. To deploy your own v
    - Click Save
 
 3. **Access your deployed app**:
-   - URL will be: `https://YOUR_USERNAME.github.io/statistics_proj`
+   - URL will be: `https://xrayian.github.io/statistics_proj`
    - May take a few minutes to deploy
 
 ## 📊 Statistical Calculations
@@ -129,7 +129,7 @@ To run this application locally:
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/YOUR_USERNAME/statistics_proj.git
+   git clone https://github.com/xrayian/statistics_proj.git
    cd statistics_proj
    ```
 
