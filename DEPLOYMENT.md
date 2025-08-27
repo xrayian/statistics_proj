@@ -34,7 +34,7 @@ git add .
 # Commit files
 git commit -m "Initial commit: Statistics Charts Application"
 
-# Add remote repository (replace xrayian with your GitHub username)
+# Add remote repository
 git remote add origin https://github.com/xrayian/statistics_proj.git
 
 # Push to GitHub

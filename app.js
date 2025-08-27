@@ -468,6 +468,12 @@ function createChart(config) {
     
     // Create new chart
     currentChart = new Chart(ctx, config);
+    
+    // Enable export button when chart is created
+    const exportButton = document.getElementById('exportChart');
+    if (exportButton) {
+        exportButton.disabled = false;
+    }
 }
 
 // Clear chart and reset form
@@ -489,7 +495,64 @@ function clearChart() {
     document.getElementById('dataStats').innerHTML = '';
     document.getElementById('chartInfo').innerHTML = '';
     
+    // Disable export button when chart is cleared
+    const exportButton = document.getElementById('exportChart');
+    if (exportButton) {
+        exportButton.disabled = true;
+    }
+    
     showMessage('Chart cleared', 'success');
+}
+
+// Export chart as image
+function exportChart() {
+    if (!currentChart) {
+        showMessage('No chart available to export', 'error');
+        return;
+    }
+    
+    try {
+        // Get chart canvas
+        const canvas = document.getElementById('statisticsChart');
+        
+        // Create a new canvas with white background
+        const exportCanvas = document.createElement('canvas');
+        const exportCtx = exportCanvas.getContext('2d');
+        
+        // Set canvas size to match the chart
+        exportCanvas.width = canvas.width;
+        exportCanvas.height = canvas.height;
+        
+        // Fill with white background
+        exportCtx.fillStyle = 'white';
+        exportCtx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
+        
+        // Draw the chart on top
+        exportCtx.drawImage(canvas, 0, 0);
+        
+        // Generate filename with chart type and timestamp
+        const chartType = document.getElementById('chartType').value;
+        const timestamp = new Date().toISOString().slice(0, 19).replace(/[:-]/g, '');
+        const filename = `${chartType.replace('-', '_')}_chart_${timestamp}.png`;
+        
+        // Convert to blob and download
+        exportCanvas.toBlob(function(blob) {
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            
+            showMessage(`Chart exported as ${filename}`, 'success');
+        }, 'image/png', 1.0);
+        
+    } catch (error) {
+        console.error('Export error:', error);
+        showMessage('Failed to export chart. Please try again.', 'error');
+    }
 }
 
 // Calculate and display statistics
@@ -615,25 +678,53 @@ function getDefaultTitle(chartType) {
 // Show messages to user
 function showMessage(message, type) {
     // Remove existing messages
-    const existingMessages = document.querySelectorAll('.error, .success, .loading');
+    const existingMessages = document.querySelectorAll('.notification-toast');
     existingMessages.forEach(msg => msg.remove());
+    
+    // Create notification container if it doesn't exist
+    let notificationContainer = document.getElementById('notification-container');
+    if (!notificationContainer) {
+        notificationContainer = document.createElement('div');
+        notificationContainer.id = 'notification-container';
+        notificationContainer.className = 'notification-container';
+        document.body.appendChild(notificationContainer);
+    }
     
     // Create new message element
     const messageElement = document.createElement('div');
-    messageElement.className = type;
-    messageElement.textContent = message;
+    messageElement.className = `notification-toast ${type}`;
     
-    // Insert message at the top of the input section
-    const inputSection = document.querySelector('.input-section');
-    inputSection.insertBefore(messageElement, inputSection.firstChild);
+    // Add icon based on type
+    const icons = {
+        success: '✅',
+        error: '❌',
+        loading: '⏳'
+    };
     
-    // Auto-remove success and loading messages after 3 seconds
+    messageElement.innerHTML = `
+        <span class="notification-icon">${icons[type] || 'ℹ️'}</span>
+        <span class="notification-text">${message}</span>
+        <button class="notification-close" onclick="this.parentElement.remove()">×</button>
+    `;
+    
+    // Add the message to container
+    notificationContainer.appendChild(messageElement);
+    
+    // Add animation class after a brief delay
+    setTimeout(() => {
+        messageElement.classList.add('show');
+    }, 10);
+    
+    // Auto-remove success and loading messages after 4 seconds
     if (type === 'success' || type === 'loading') {
         setTimeout(() => {
             if (messageElement.parentNode) {
-                messageElement.remove();
+                messageElement.classList.remove('show');
+                setTimeout(() => {
+                    messageElement.remove();
+                }, 300);
             }
-        }, 3000);
+        }, 4000);
     }
 }
 
